@@ -10,11 +10,11 @@ namespace PlainTextGen
 		static void Main(string[] args)
 		{
 			string json = new MakerBuilder()
-				.AddTemplate(new MakerTemplate
+				.AddTemplate(new MakerContainer
 				{
-					TemplateID = "TestTemplateID",
+					ID = Guid.NewGuid(),
 					FileName = "TestTemplate",
-					OutputDirectory = "Location/Root/"
+					TargetDirectory = "Location/Root/"
 				})
 				.BuildJSON();
 
@@ -28,7 +28,7 @@ namespace PlainTextGen
 				.ParseJSON(json)
 				.Build();
 
-			Console.WriteLine($"Version: {description.VersionCode}\nTemplates: {description.Templates.Length}\n\n{string.Join('\n', description.Templates.Select(x => $"{x.TemplateID} -> {x.FileName} outputting to {x.OutputDirectory}"))}");
+			Console.WriteLine($"Version: {description.VersionCode}\nTemplates: {description.Data.Length}\n\n{string.Join('\n', description.Data.Select(x => $"{x.ID} -> {x.FileName} outputting to {x.TargetDirectory}"))}");
 		}
 	}
 }

@@ -3,10 +3,10 @@ using Newtonsoft.Json.Linq;
 
 namespace PlainTextGenModels.Maker
 {
-	/// <summary>
-	/// Builder class that is used to compile the list of templates that are to be created
-	/// </summary>
-	public sealed class MakerBuilder
+    /// <summary>
+    /// Builder class that is used to compile the list of templates that are to be created
+    /// </summary>
+    public sealed partial class MakerBuilder
 	{
 		/*----------Variables----------*/
 		//PRIVATE
@@ -14,7 +14,7 @@ namespace PlainTextGenModels.Maker
 		/// <summary>
 		/// Store the collection of templates that are being requested to be constructed
 		/// </summary>
-		private readonly List<MakerTemplate> _templates = new List<MakerTemplate>();
+		private readonly List<MakerContainer> _templates = new List<MakerContainer>();
 
 		/*----------Functions----------*/
 		//PUBLIC
@@ -24,7 +24,7 @@ namespace PlainTextGenModels.Maker
 		/// </summary>
 		/// <param name="template">The template asset that is to be created</param>
 		/// <returns>Returns a reference to itself so that instructions can be chained</returns>
-		public MakerBuilder AddTemplate(MakerTemplate template)
+		public MakerBuilder AddTemplate(MakerContainer template)
 		{
 			_templates.Add(template);
 			return this;
@@ -40,10 +40,10 @@ namespace PlainTextGenModels.Maker
 		/// <exception cref="ArgumentException">The supplied JSON is using an Unsupported version code that can't be read</exception>
 		public MakerBuilder ParseJSON(string json)
 		{
-			// Get the type of object that is to be processed
+			// Get the version of object that is to be processed
 			JObject description = JObject.Parse(json);
 			ushort code = description[nameof(MakerDescription.VersionCode)]?.Value<ushort>() ??
-				throw new FormatException($"Received JSON is missing the {nameof(MakerDescription.VersionCode)} property");
+				throw new FormatException($"[{nameof(MakerBuilder)}] Received JSON is missing the {nameof(MakerDescription.VersionCode)} property");
 
 			// Determine how the data will be parsed
 			switch (code)
@@ -55,7 +55,7 @@ namespace PlainTextGenModels.Maker
 				// TODO: Any older versions that are being made compatible
 
 				// Anything else is a problem we can't handle
-				default: throw new ArgumentException($"Unable to handle the parsing of a description with the version code '{code}'");
+				default: throw new ArgumentException($"[{nameof(MakerBuilder)}] Unable to handle the parsing of a description with the version code '{code}'");
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace PlainTextGenModels.Maker
 			return new MakerDescription
 			{
 				VersionCode = MakerDescription.LATEST_VERSION_CODE,
-				Templates	= _templates.ToArray()
+				Data	= _templates.ToArray()
 			};
 		}
 
@@ -93,11 +93,11 @@ namespace PlainTextGenModels.Maker
 		private MakerBuilder ParseLatestVersion(JObject description)
 		{
 			// We need the template descriptions from the object
-			JToken templatesObj = description[nameof(MakerDescription.Templates)] ??
-				throw new FormatException($"Received JSON is missing the {nameof(MakerDescription.Templates)} property");
+			JToken templatesObj = description[nameof(MakerDescription.Data)] ??
+				throw new FormatException($"[{nameof(MakerBuilder)}] Received JSON is missing the {nameof(MakerDescription.Data)} property");
 
 			// Parse the data that we need
-			MakerTemplate[]? templates = templatesObj.ToObject<MakerTemplate[]>();
+			MakerContainer[]? templates = templatesObj.ToObject<MakerContainer[]>();
 			if (templates is not null)
 			{
 				_templates.AddRange(templates);

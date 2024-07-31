@@ -3,6 +3,9 @@
     /// <summary>
     /// Defines the collection of settings that will be used to describe how the generation process should be handled
     /// </summary>
+	/// <remarks>
+	/// This corresponds to the data in <see cref="Template.TemplateDescription"/>
+	/// </remarks>
     public struct MakerDescription
     {
 		/// <summary>
@@ -18,29 +21,6 @@
 		/// <summary>
 		/// The collection of templates that are to be created during the build process
 		/// </summary>
-		public MakerTemplate[] Templates { get; internal set; }
-    }
-
-    /// <summary>
-    /// A description of the different templates that are to be created as a part of the generation operation
-    /// </summary>
-    public struct MakerTemplate
-    {
-        /// <summary>
-        /// The ID of the template file that is to be generated with these settings
-        /// </summary>
-        public string TemplateID;
-
-        /// <summary>
-        /// The name that has been given to the file generation process that is to be handled
-        /// </summary>
-        public string FileName;
-
-		/// <summary>
-		/// The directory where the generated template file should be output to
-		/// </summary>
-		public string OutputDirectory;
-
-		// TODO: Input variables
+		public MakerContainer[] Data { get; internal set; }
     }
 }
